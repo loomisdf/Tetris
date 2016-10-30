@@ -11,6 +11,8 @@ import java.awt.event.MouseEvent;
 public class GamePanel extends JPanel implements Runnable {
     private static final int PWIDTH = 500;
     private static final int PHEIGHT = 400;
+    private static final int NO_DELAYS_PER_YIELD = 16;
+    private static int MAX_FRAME_SKIPS = 5;
 
     private Thread animator;
     private boolean running = false;
@@ -112,29 +114,53 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        long beforeTime, timeDiff, sleepTime;
+        long beforeTime, afterTime, timeDiff, sleepTime;
+        long overSleepTime = 0L;
+        int noDelays = 0;
+        long excess = 0L;
 
-        beforeTime = System.currentTimeMillis();
+        beforeTime = System.nanoTime();
 
         running = true;
         while(running) {
             gameUpdate();
             gameRender();
             paintScreen();
-            timeDiff = System.currentTimeMillis() - beforeTime;
-            sleepTime = period - timeDiff;
 
-            if(sleepTime <= 0)
-                sleepTime = 5;
-            try {
-                Thread.sleep(sleepTime);
-            }
-            catch(InterruptedException e) {
+            afterTime = System.nanoTime();
+            timeDiff = afterTime - beforeTime;
+            sleepTime = (period - timeDiff) - overSleepTime;
 
+            if(sleepTime > 0) { // some time left in this cycle
+                try {
+                    Thread.sleep(sleepTime / 1000000L); // nano -> ms
+                } catch (InterruptedException e) {
+                    overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
+                }
             }
-            System.exit(0);
+            else { // sleepTime <= 0; frame took longer than the period
+                excess -= sleepTime; // store excess time value
+                overSleepTime = 0L;
+
+                if(++noDelays >= NO_DELAYS_PER_YIELD) {
+                    Thread.yield();
+                    noDelays = 0;
+                }
+            }
+            beforeTime = System.nanoTime();
+
+            /* If frame animation is taking too long, update the game state
+               without rendering it, to get the updates/sec nearer to
+               the required FPS. */
+            int skips = 0;
+            while((excess > period) && (skips < MAX_FRAME_SKIPS)) {
+                excess -= period;
+                gameUpdate();
+                skips++;
+            }
         }
-    }
+        System.exit(0);
+    } // end of run()
 
     private void paintScreen() {
         Graphics g;

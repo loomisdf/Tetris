@@ -24,6 +24,7 @@ public class Tetris {
                 r[c] = EMPTY;
             }
         }
+        // TODO abstract this into its own data structure called TetriminoQueue
         // populate the tetrimino queue
         for(int i = 0; i < QUEUE_SIZE; i++) {
             int type = ThreadLocalRandom.current().nextInt(0, 6 + 1);
