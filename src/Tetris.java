@@ -1,3 +1,7 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ThreadLocalRandom;
@@ -5,7 +9,28 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Created by loomisdf on 10/28/16.
  */
-public class Tetris {
+public class Tetris extends JFrame implements WindowListener{
+    private static int DEFAULT_FPS = 80;
+
+    private GamePanel gp;
+
+    public Tetris(long period) {
+        makeGUI(period);
+        init();
+
+        addWindowListener(this);
+        pack();
+        setResizable(false);
+        setVisible(true);
+    }
+
+    private void makeGUI(long period) {
+        Container c = getContentPane();
+        gp = new GamePanel(this, period);
+        c.add(gp, "Center");
+
+    }
+
     public static final int EMPTY = 0;
     public static final int BLOCK = 1;
     public static final int ROWS = 20;
@@ -80,10 +105,61 @@ public class Tetris {
 
     }
 
+    public void draw(Graphics g) {
+
+        g.setColor(Color.black);
+        g.fillRect(50, 50, 50, 50);
+        //TODO draw the current tetrimino
+        //TODO draw the brd
+    }
+
     public static void main(String[] args) {
-        init();
+        int fps = DEFAULT_FPS;
+        if(args.length != 0) {
+            fps = Integer.parseInt(args[0]);
+        }
+
+        long period = (long) 1000.0 / fps;
+        System.out.println("Fps: " + fps + "; period: " + period + " ms");
+        new Tetris(period*1000000L);
+
         printBoard();
         curr_tetrimino.moveRight(brd);
         printBoard();
+    }
+
+    @Override
+    public void windowOpened(WindowEvent windowEvent) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent windowEvent) {
+        gp.stopGame();
+    }
+
+    @Override
+    public void windowClosed(WindowEvent windowEvent) {
+
+    }
+
+    @Override
+    public void windowIconified(WindowEvent windowEvent) {
+        gp.pauseGame();
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent windowEvent) {
+        gp.resumeGame();
+    }
+
+    @Override
+    public void windowActivated(WindowEvent windowEvent) {
+        gp.resumeGame();
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent windowEvent) {
+        gp.pauseGame();
     }
 }

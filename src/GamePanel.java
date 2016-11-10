@@ -16,15 +16,20 @@ public class GamePanel extends JPanel implements Runnable {
 
     private Thread animator;
     private boolean running = false;
-    private int period = 10;
+    private boolean isPaused = false;
+    private long period;
 
     private boolean gameOver = false;
 
     private Graphics dbg;
     private Image dbImage = null;
 
+    private Tetris tTop;
 
-    public GamePanel() {
+    public GamePanel(Tetris tetris, long period) {
+        tTop = tetris;
+        this.period = period;
+
         setBackground(Color.white);
         setPreferredSize(new Dimension(PWIDTH, PHEIGHT));
         setFocusable(true);
@@ -43,9 +48,9 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private void testPress(int x, int y) {
-        if(!gameOver) {
+        if(!isPaused && !gameOver) {
             // TODO do something
-            System.out.println("x = [" + x + "], y = [" + y + "]");
+            System.out.println("Mouse pressed: x = [" + x + "], y = [" + y + "]");
         }
     }
 
@@ -62,6 +67,14 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
         });
+    }
+
+    public void pauseGame() {
+        isPaused = true;
+    }
+
+    public void resumeGame() {
+        isPaused = false;
     }
 
     public void addNotify() {
@@ -81,7 +94,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void gameUpdate() {
-        if(!gameOver) {
+        if(!isPaused && !gameOver) {
             // update game state
         }
     }
@@ -102,6 +115,7 @@ public class GamePanel extends JPanel implements Runnable {
         dbg.fillRect(0, 0, PWIDTH, PHEIGHT);
 
         // TODO draw game elements
+        tTop.draw(dbg);
 
         if(gameOver) {
             gameOverMessage(dbg);
