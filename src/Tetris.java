@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.LinkedList;
@@ -14,6 +16,17 @@ public class Tetris extends JFrame implements WindowListener{
 
     private GamePanel gp;
     private Grid grid;
+
+
+    public static final int EMPTY = 0;
+    public static final int BLOCK = 1;
+    public static final int ROWS = 20;
+    public static final int COLS = 10;
+    public static final int QUEUE_SIZE = 10;
+    public static int[][] brd;
+
+    public static Queue<Tetrimino> tetriminoQueue = new LinkedList<Tetrimino>();
+    public static Tetrimino curr_tetrimino;
 
     public Tetris(long period) {
         grid = new Grid(15, 15, 150, 300);
@@ -33,16 +46,6 @@ public class Tetris extends JFrame implements WindowListener{
         c.add(gp, "Center");
 
     }
-
-    public static final int EMPTY = 0;
-    public static final int BLOCK = 1;
-    public static final int ROWS = 20;
-    public static final int COLS = 10;
-    public static final int QUEUE_SIZE = 10;
-    public static int[][] brd;
-
-    public static Queue<Tetrimino> tetriminoQueue = new LinkedList<Tetrimino>();
-    public static Tetrimino curr_tetrimino;
 
     public static void init() {
         // Fill the brd with empty spaces
@@ -115,9 +118,8 @@ public class Tetris extends JFrame implements WindowListener{
     public void draw(Graphics g) {
 
         g.setColor(Color.black);
-        grid.draw(g);
-        //TODO draw the current tetrimino
-        curr_tetrimino.draw(g, grid);
+        grid.draw(g); // draw the grid
+        curr_tetrimino.draw(g, grid); // draw the current tetrimino
     }
 
     public static void main(String[] args) {
@@ -130,9 +132,7 @@ public class Tetris extends JFrame implements WindowListener{
         System.out.println("Fps: " + fps + "; period: " + period + " ms");
         new Tetris(period*1000000L);
 
-        printBoard();
-        curr_tetrimino.moveRight(brd);
-        printBoard();
+        //curr_tetrimino.moveRight(brd);
     }
 
     @Override

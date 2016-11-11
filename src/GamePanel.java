@@ -45,6 +45,29 @@ public class GamePanel extends JPanel implements Runnable {
                 testPress(mouseEvent.getX(), mouseEvent.getY());
             }
         });
+
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent keyEvent) {
+                keyPress(keyEvent);
+            }
+        });
+    }
+
+    private void keyPress(KeyEvent k) {
+        int keyCode = k.getKeyCode();
+        if(keyCode == KeyEvent.VK_UP) {
+           // TODO rotate piece
+        }
+        if(keyCode == KeyEvent.VK_DOWN) {
+            tTop.curr_tetrimino.moveDown();
+        }
+        if(keyCode == KeyEvent.VK_LEFT) {
+            tTop.curr_tetrimino.moveLeft();
+        }
+        if(keyCode == KeyEvent.VK_RIGHT) {
+            tTop.curr_tetrimino.moveRight();
+        }
     }
 
     private void testPress(int x, int y) {

@@ -77,10 +77,10 @@ public class Tetrimino {
         return false;
     }
 
-    public void moveRight(int[][] brd) {
+    public void moveRight() {
         // check for room
         for(Block b : blocks) {
-            if(b.col == Tetris.COLS - 1 || brd[b.row][b.col + 1] == Tetris.BLOCK) {
+            if(b.col == Tetris.COLS - 1 || Tetris.brd[b.row][b.col + 1] == Tetris.BLOCK) {
                 return;
             }
         }
@@ -88,10 +88,10 @@ public class Tetrimino {
             b.col++;
         }
     }
-    public void moveLeft(int[][] brd) {
+    public void moveLeft() {
         // check for room
         for(Block b : blocks) {
-            if(b.col == 0 || brd[b.row][b.col - 1] == Tetris.BLOCK) {
+            if(b.col == 0 || Tetris.brd[b.row][b.col - 1] == Tetris.BLOCK) {
                 return;
             }
         }
@@ -99,10 +99,10 @@ public class Tetrimino {
             b.col--;
         }
     }
-    public boolean moveDown(int[][] brd) {
+    public boolean moveDown() {
         // check for room
         for(Block b : blocks) {
-            if(b.row == Tetris.ROWS - 1 || brd[b.row + 1][b.col] == Tetris.BLOCK) {
+            if(b.row == Tetris.ROWS - 1 || Tetris.brd[b.row + 1][b.col] == Tetris.BLOCK) {
                 return false;
             }
         }
