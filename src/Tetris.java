@@ -13,8 +13,11 @@ public class Tetris extends JFrame implements WindowListener{
     private static int DEFAULT_FPS = 80;
 
     private GamePanel gp;
+    private Grid grid;
 
     public Tetris(long period) {
+        grid = new Grid(15, 15, 150, 300);
+
         makeGUI(period);
         init();
 
@@ -105,12 +108,16 @@ public class Tetris extends JFrame implements WindowListener{
 
     }
 
+    public void update() {
+
+    }
+
     public void draw(Graphics g) {
 
         g.setColor(Color.black);
-        g.fillRect(50, 50, 50, 50);
+        grid.draw(g);
         //TODO draw the current tetrimino
-        //TODO draw the brd
+        curr_tetrimino.draw(g, grid);
     }
 
     public static void main(String[] args) {

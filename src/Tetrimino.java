@@ -1,9 +1,12 @@
+import java.awt.*;
+
 /**
  * Created by loomisdf on 10/28/16.
  */
 public class Tetrimino {
     public Block[] blocks;
     public TetriminoType tType;
+    private Color color = Color.blue;
 
     public Tetrimino(TetriminoType tType) {
         this.tType = tType;
@@ -52,6 +55,16 @@ public class Tetrimino {
                 blocks[2] = new Block(0, 5);
                 blocks[3] = new Block(0, 6);
                 break;
+        }
+    }
+
+    public void draw(Graphics g, Grid grid) {
+        int block_width = grid.getWidth() / 10;
+        int block_height = grid.getHeight() / 20;
+
+        g.setColor(color);
+        for(Block b : blocks) {
+            g.fillRect(grid.getX() + (b.col * block_width), grid.getY() + (b.row * block_height), block_width, block_height);
         }
     }
 
